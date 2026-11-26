@@ -9,38 +9,44 @@ function Pedidos() {
   const [erro, setErro] = useState('')
 
   async function carregarPedidos() {
+    let resposta
     try {
-      const resposta = await fetch(`${endereco_Api}/pedidos`)
+      resposta = await fetch(`${endereco_Api}/pedidos`)
       if (!resposta.ok) {
-        throw new Error('Erro ao carregar pedidos')
+        const dados = await resposta.json().catch(() => ({}))
+        throw new Error(dados.mensagem || 'Erro ao carregar pedidos')
       }
       const dados = await resposta.json()
       setPedidos(dados)
       setErro('')
     } catch (err) {
-      setErro(err.message || 'Erro ao carregar pedidos')
+      setErro(resposta ? err.message : 'Não foi possível conectar ao servidor de pedidos')
     } finally {
       setCarregando(false)
     }
   }
 
   async function fecharPedido(id) {
+    let resposta
     try {
-      const resposta = await fetch(`${endereco_Api}/pedidos/${id}/fechar`, {
+      resposta = await fetch(`${endereco_Api}/pedidos/${id}/fechar`, {
         method: 'POST'
       })
 
       if (!resposta.ok) {
-        throw new Error('Erro ao fechar pedido')
+        const dados = await resposta.json().catch(() => ({}))
+        throw new Error(dados.mensagem || 'Erro ao fechar pedido')
       }
 
       await carregarPedidos()
     } catch (erro) {
-      setErro(erro.message)
+      setErro(resposta ? erro.message : 'Não foi possível conectar ao servidor de pedidos')
     }
   }
 
   useEffect(() => {
+    // O estado é atualizado após a consulta assíncrona ao servidor.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     carregarPedidos()
   }, [])
 

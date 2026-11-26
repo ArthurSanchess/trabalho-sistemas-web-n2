@@ -1,16 +1,15 @@
-# React + Vite
+# Frontend da lanchonete
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta é a parte React do Trabalho N2. As páginas são **Cardápio** e **Pedidos**, e as requisições usam `fetch` para o Servidor 2, na porta 3001.
 
-Currently, two official plugins are available:
+Nesta pasta:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```sh
+npm ci
+npm run lint
+npm run build
+```
 
-## React Compiler
+O build gera a pasta `dist`, que é disponibilizada pelo Servidor 1 na porta 3000. O comando `npm run dev` serve para desenvolver a interface; para executar o trabalho pelo Express, faça o build e inicie os três servidores.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+As instruções completas de instalação, execução e entrega estão no [README principal](../../README.md).

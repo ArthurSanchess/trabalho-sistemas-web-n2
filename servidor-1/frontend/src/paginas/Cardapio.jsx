@@ -27,11 +27,13 @@ function Cardapio() {
   const [mensagem, setMensagem] = useState('')
 
   async function carregarProdutos() {
+    let resposta
     try {
-      const resposta = await fetch(`${endereco_Api}/produtos`)
+      resposta = await fetch(`${endereco_Api}/produtos`)
 
       if (!resposta.ok) {
-        throw new Error('Deu erro no produto')
+        const dados = await resposta.json().catch(() => ({}))
+        throw new Error(dados.mensagem || 'Erro ao carregar produtos')
       }
 
       const dados = await resposta.json()
@@ -44,13 +46,15 @@ function Cardapio() {
 
       setProdutos(lista)
     } catch (erro) {
-      setMensagem(erro.message)
+      setMensagem(resposta ? erro.message : 'Não foi possível conectar ao servidor de pedidos')
     } finally {
       setCarregando(false)
     }
   }
 
   useEffect(() => {
+    // O estado é atualizado após a consulta assíncrona ao servidor.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     carregarProdutos()
   }, [])
 
@@ -70,10 +74,11 @@ function Cardapio() {
       Itens: itens
     }
 
+    let resposta
     try {
       setMensagem('')
 
-      const resposta = await fetch(`${endereco_Api}/pedidos`, {
+      resposta = await fetch(`${endereco_Api}/pedidos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pedido)
@@ -81,7 +86,7 @@ function Cardapio() {
 
       if (!resposta.ok) {
         // a API devolve o motivo da recusa em mensagem
-        const dados = await resposta.json()
+        const dados = await resposta.json().catch(() => ({}))
         throw new Error(dados.mensagem || 'Erro ao enviar pedido.')
       }
 
@@ -91,7 +96,7 @@ function Cardapio() {
       // atualiza o estoque na tela após o pedido aceito
       await carregarProdutos()
     } catch (erro) {
-      setMensagem(erro.message)
+      setMensagem(resposta ? erro.message : 'Não foi possível conectar ao servidor de pedidos')
     }
   }
 

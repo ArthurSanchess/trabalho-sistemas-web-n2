@@ -8,16 +8,18 @@ const produtos = require('../dados/produtos')
 const pedidos = require('../dados/pedidos')
 const { baixarEstoque } = require('../servicos/estoque')
 
+let proximoId = 1
+
 // Registrar pedido
 router.post(
   '/',
   [
     body('NomeCliente')
       .isString()
-      .withMessage('o nome nao pode ultilizar numero e caracteres especiais')
+      .withMessage('O nome deve ser um texto')
       .trim()
-      .isLength({ min: 6 })
-      .withMessage('O nome deve ter no minimo 5 caracteres'),
+      .isLength({ min: 5 })
+      .withMessage('O nome deve ter no mínimo 5 caracteres após remover os espaços das extremidades'),
 
     body('Itens')
       .isArray({ min: 1 })
@@ -73,7 +75,7 @@ router.post(
       await baixarEstoque(itensBaixa)
 
       const novoPedido = {
-        Id: Date.now(),
+        Id: proximoId++,
         NomeCliente: req.body.NomeCliente,
         Itens: itensPedido,
         Total: total
@@ -127,7 +129,7 @@ router.post(
     pedidos.splice(indice, 1)
 
     res.json({
-      mensagem: 'Pedido feito com sucesso'
+      mensagem: 'Pedido fechado com sucesso'
     })
   }
 )
